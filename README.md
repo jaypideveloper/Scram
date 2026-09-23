@@ -33,45 +33,36 @@ Scram is a 40-player multiplayer FPS built in Unity with C# and Photon Bolt. I l
 </p>
 
 ## My Role
-
-* Architected and implemented gameplay systems in C# for combat, movement, and player abilities
-* Built the multiplayer networking systems that synchronize players and gameplay state
-* Implemented matchmaking, session control, and region-based deployment
-* Integrated gameplay, networking, and UI into a released product
-* Debugged latency and synchronization issues through playtesting and iteration
+* Designed and implemented C# gameplay systems for player locomotion, combat, and abilities within Unity.
+* Engineered multiplayer state synchronization and client/server interactions using Photon Bolt.
+* Implemented matchmaking, session lifecycle management, and support for deployment across five regions.
+* Integrated gameplay, networking, and UI systems into a production multiplayer release.
+* Diagnosed and resolved latency, hit registration, and state synchronization issues through multiplayer playtesting.
 
 ## Technical Breakdown
-
-* **Server-authoritative gameplay:** The server owns core gameplay state and validates actions before replicating results to clients.
-* **Client prediction:** Movement responds immediately to local input instead of waiting for a server round trip.
-* **State reconciliation:** Clients correct predicted state when it differs from the server’s authoritative result.
-* **Lag compensation:** Historical state rewind lets the server evaluate shots against player positions at the time they were fired.
-* **Modular gameplay systems:** Combat, movement, and abilities were designed as distinct systems that could be developed and iterated on independently.
-* **Network traffic optimization:** Gameplay state was synchronized for matches of up to 40 players while the game supported 300 concurrent users.
+* **Server-authoritative simulation:** Core gameplay decisions are validated on the server, which maintains authoritative state and replicates results to connected clients.
+* **Client-side prediction:** Local movement input is applied immediately on the client to avoid waiting for network round trips before the player receives feedback.
+* **Server reconciliation:** Predicted client state is compared with authoritative server state and corrected when the two diverge.
+* **Lag-compensated hit detection:** The server uses historical player state to evaluate shots against positions corresponding to when the firing client took the shot.
+* **Modular C# gameplay architecture:** Combat, movement, and player abilities are implemented as separate systems, allowing their behavior to be developed and adjusted independently.
+* **Multiplayer traffic management:** State synchronization was designed to support real-time combat in 40-player matches, with the game reaching 300 concurrent players.
 
 ## Key Engineering Challenges
+**Hit registration under latency:** At 200 ms or higher ping, resolving shots against current server positions could produce results that differed from what the firing player saw. I implemented server-side historical rewind to evaluate hits using earlier player state.
 
-**Accurate Hits at High Latency**
-At 200 ms or higher ping, evaluating shots against current positions produced inconsistent results. I implemented server-side rewind so hit detection could account for network delay.
+**Responsive movement under server authority:** Waiting for authoritative updates introduced perceptible input latency. I implemented client-side prediction for immediate movement feedback and reconciliation to correct deviations from server state.
 
-**Responsive Movement with Server Authority**
-Waiting for the server before applying input made controls feel delayed. I combined local prediction with server reconciliation to preserve responsiveness and correct state divergence.
+**Client trust boundaries:** Because client code can be modified, client-reported gameplay outcomes cannot be treated as authoritative. Core gameplay decisions are validated server-side before the resulting state is replicated to other players.
 
-**Trusting an Untrusted Client**
-Players can modify client code. I kept core gameplay decisions on the server and replicated validated results to clients, reducing the impact of manipulated client data.
-
-**Scaling Real-Time Sessions**
-A 40-player FPS generates frequent movement and combat updates. I worked on network traffic and synchronization behavior to support full matches across five regions.
+**Real-time synchronization at match scale:** A 40-player session requires frequent movement and combat updates across clients with different network conditions. I worked on synchronization and network traffic behavior to maintain playable sessions across five regions.
 
 ## Scale
-
-* 1M+ downloads on Steam
+* 1M+ Steam downloads
 * 300 concurrent players
-* 40-player real-time matches
-* Deployed across five regions
+* 40 players per real-time match
+* Deployment across five regions
 
 ## DEMO
-
 The original servers are no longer active. To play, use the modded demo, which runs through a different Steam game setup.
 
 1. Download and install the demo: https://drive.google.com/file/d/1UoxqCMN4VNJ0DlIm-IpZ52WMNxId3A6h/view?usp=drive_link
