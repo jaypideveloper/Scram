@@ -1,4 +1,5 @@
 # Scram: Multiplayer PvP Shooter made in Unity
+
 <p align="center">
   <a href="https://www.youtube.com/watch?v=ZZ6y3P8Cp5E"><strong>▶Watch Video Demo</strong></a>
 </p>
@@ -11,8 +12,7 @@
 </p>
 
 <p align="center">
-Scram is a multiplayer PvP FPS built in Unity using Photon Bolt, supporting up to 40 players per match across 5 different regions.
-I led development from early prototype to release, focusing on gameplay systems, networking, and overall architecture.
+Scram is a 40-player multiplayer FPS built in Unity with C# and Photon Bolt. I led its development from prototype through release, engineering the gameplay and networking systems behind combat, movement, matchmaking, and real-time player synchronization across five regions.
 </p>
 
 <p align="center">
@@ -33,46 +33,47 @@ I led development from early prototype to release, focusing on gameplay systems,
 </p>
 
 ## My Role
-- Designed and implemented modular gameplay systems
-- Built multiplayer networking architecture
-- Developed combat, movement, and player abilities
-- Implemented matchmaking and session control
-- Led playtesting and gameplay iteration
+
+* Architected and implemented gameplay systems in C# for combat, movement, and player abilities
+* Built the multiplayer networking systems that synchronize players and gameplay state
+* Implemented matchmaking, session control, and region-based deployment
+* Integrated gameplay, networking, and UI into a released product
+* Debugged latency and synchronization issues through playtesting and iteration
 
 ## Technical Breakdown
-- Server-authoritative networking model to prevent cheating
-- Client prediction for immediate player responsiveness
-- State reconciliation to correct divergence without disrupting player control
-- Lag compensation using historical state rewind for accurate hit detection
-- Optimized network traffic to support 40-player game sessions and 300 CCU
 
-## Key Challenges and Solutions
-**Hit Registration Under Latency**
-- Issue: Inconsistent hit detection at 200ms+ ping
-- Solution: Implemented lag compensation with server-side rewind
+* **Server-authoritative gameplay:** The server owns core gameplay state and validates actions before replicating results to clients.
+* **Client prediction:** Movement responds immediately to local input instead of waiting for a server round trip.
+* **State reconciliation:** Clients correct predicted state when it differs from the server’s authoritative result.
+* **Lag compensation:** Historical state rewind lets the server evaluate shots against player positions at the time they were fired.
+* **Modular gameplay systems:** Combat, movement, and abilities were designed as distinct systems that could be developed and iterated on independently.
+* **Network traffic optimization:** Gameplay state was synchronized for matches of up to 40 players while the game supported 300 concurrent users.
 
-**Movement Responsiveness**
-- Issue: Input delay from server authority
-- Solution: Client prediction + reconciliation implementation
+## Key Engineering Challenges
 
-**Cheating Prevention**
-- Issue: Players can cheat by modifying code
-- Solution: Handle core game data through server and replicate to clients
+**Accurate Hits at High Latency**
+At 200 ms or higher ping, evaluating shots against current positions produced inconsistent results. I implemented server-side rewind so hit detection could account for network delay.
+
+**Responsive Movement with Server Authority**
+Waiting for the server before applying input made controls feel delayed. I combined local prediction with server reconciliation to preserve responsiveness and correct state divergence.
+
+**Trusting an Untrusted Client**
+Players can modify client code. I kept core gameplay decisions on the server and replicated validated results to clients, reducing the impact of manipulated client data.
+
+**Scaling Real-Time Sessions**
+A 40-player FPS generates frequent movement and combat updates. I worked on network traffic and synchronization behavior to support full matches across five regions.
 
 ## Scale
-- 1M+ downloads on Steam
-- 300 concurrent players
-- 40-player real-time game sessions
-- Deployed across 5 regions
+
+* 1M+ downloads on Steam
+* 300 concurrent players
+* 40-player real-time matches
+* Deployed across five regions
 
 ## DEMO
-Note: The servers are no longer active so you have to download a modded demo to make it work. It uses a different Steam game setup.
-1. Download and install: https://drive.google.com/file/d/1UoxqCMN4VNJ0DlIm-IpZ52WMNxId3A6h/view?usp=drive_link
-2. Open Steam and download: https://store.steampowered.com/app/705210/Cube_Racer/
-3. Open the launcher to play any Scram version.
 
+The original servers are no longer active. To play, use the modded demo, which runs through a different Steam game setup.
 
-
-
-
-
+1. Download and install the demo: https://drive.google.com/file/d/1UoxqCMN4VNJ0DlIm-IpZ52WMNxId3A6h/view?usp=drive_link
+2. Open Steam and download Cube Racer: https://store.steampowered.com/app/705210/Cube_Racer/
+3. Open the launcher and select a Scram version to play.
